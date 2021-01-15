@@ -26,6 +26,6 @@ namespace PrimaryDiagonal
                 sum += matrix[rows, rows];
             }
             Console.WriteLine(sum);
-        }
+        } 
     }
 }
