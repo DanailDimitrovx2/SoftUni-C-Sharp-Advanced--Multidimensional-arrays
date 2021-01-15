@@ -1,0 +1,45 @@
+using System;
+using System.Linq;
+
+namespace SymbolInMatrix
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var n = int.Parse(Console.ReadLine());
+            char[,] matrix = new char[n, n];
+            for (int rows = 0; rows < matrix.GetLength(0); rows++)
+            {
+                var input = string.Join(" ", Console.ReadLine());
+                for (int cols = 0; cols < matrix.GetLength(1); cols++)
+                {
+                    matrix[rows, cols] = input[cols];
+                }
+            }
+            var symbol = char.Parse(Console.ReadLine());
+            var isFound = false;
+            for (int rows = 0; rows < matrix.GetLength(0); rows++)
+            {
+                for (int cols = 0; cols < matrix.GetLength(1); cols++)
+                {
+                    if (matrix[rows, cols] == symbol)
+                    {
+                        Console.WriteLine($"({rows}, {cols})");
+                        isFound = true;
+                        break;
+                    }
+                }
+                if (isFound == true)
+                {
+                    break;
+                }
+            }
+            if (isFound == false)
+            {
+                Console.WriteLine($"{symbol} does not occur in the matrix");
+            }
+
+        }
+    }
+}
