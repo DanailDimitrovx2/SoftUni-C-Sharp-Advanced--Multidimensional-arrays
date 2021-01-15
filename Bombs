@@ -1,0 +1,124 @@
+using System;
+using System.Linq;
+
+namespace Bombs
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var n = int.Parse(Console.ReadLine());
+            int[,] matrix = new int[n, n];
+            for (int rows = 0; rows < matrix.GetLength(0); rows++)
+            {
+                var values = Console.ReadLine()
+                    .Split()
+                    .Select(int.Parse)
+                    .ToArray();
+                for (int cols = 0; cols < matrix.GetLength(1); cols++)
+                {
+                    matrix[rows, cols] = values[cols];
+                }
+            }
+            var bombs = Console.ReadLine()
+                .Split();
+            for (int i = 0; i < bombs.Length; i++)
+            {
+                var coordinates = bombs[i]
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToArray();
+                var bombRow = coordinates[0];
+                var bombCol = coordinates[1];
+                if (bombRow >= 0 && bombRow < matrix.GetLength(0) &&
+                    bombCol >= 0 && bombCol < matrix.GetLength(1))
+                {
+                    var power = matrix[bombRow, bombCol];
+                    if (bombCol > 0)
+                    {
+                        if (bombRow > 0)
+                        {
+                            if (matrix[bombRow - 1, bombCol - 1] > 0)
+                            {
+                                matrix[bombRow - 1, bombCol - 1] -= power;
+                            }
+                        }
+                        if (matrix[bombRow, bombCol - 1] > 0)
+                        {
+                            matrix[bombRow, bombCol - 1] -= power;
+                        }
+                        if (bombRow < matrix.GetLength(0)-1)
+                        {
+                            if (matrix[bombRow + 1, bombCol - 1] > 0)
+                            {
+                                matrix[bombRow + 1, bombCol - 1] -= power;
+                            }
+                        }
+                    }
+                    if (bombRow > 0)
+                    {
+                        if (matrix[bombRow - 1, bombCol] > 0)
+                        {
+                            matrix[bombRow - 1, bombCol] -= power;
+                        }
+                        if (bombCol < matrix.GetLength(1)-1)
+                        {
+                            if (matrix[bombRow - 1, bombCol + 1] > 0)
+                            {
+                                matrix[bombRow - 1, bombCol + 1] -= power;
+                            }
+                        }
+                    }
+                    if (bombCol < matrix.GetLength(1) - 1)
+                    {
+                        if (matrix[bombRow, bombCol + 1] > 0)
+                        {
+                            matrix[bombRow, bombCol + 1] -= power;
+                        }
+                       
+                    }
+                    if (bombRow < matrix.GetLength(0) - 1)
+                    {
+
+                        if (matrix[bombRow + 1, bombCol] > 0)
+                        {
+                            matrix[bombRow + 1, bombCol] -= power;
+                        }
+                        if (bombCol < matrix.GetLength(1) - 1)
+                        {
+                            if (matrix[bombRow + 1, bombCol + 1] > 0)
+                            {
+                                matrix[bombRow + 1, bombCol + 1] -= power;
+                            }
+                        }
+                    }
+                    matrix[bombRow, bombCol] -= power;
+                }
+               
+            }
+            var sum = 0;
+            var counter = 0;
+            for (int rows = 0; rows < matrix.GetLength(0); rows++)
+            {
+                for (int cols = 0; cols < matrix.GetLength(1); cols++)
+                {
+                    if (matrix[rows, cols] > 0)
+                    {
+                        sum += matrix[rows, cols];
+                        counter++;
+                    }
+                }
+            }
+            Console.WriteLine($"Alive cells: {counter}" +
+                $"\nSum: {sum}");
+            for (int rows = 0; rows < matrix.GetLength(0); rows++)
+            {
+                for (int cols = 0; cols < matrix.GetLength(1); cols++)
+                {
+                    Console.Write($"{matrix[rows, cols]} ");
+                }
+                Console.WriteLine();
+            }
+        }
+    }
+}
