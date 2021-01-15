@@ -1,0 +1,205 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace VampireBunies
+{
+    class Bunny
+    {
+        public Bunny(int row, int col)
+        {
+            this.row = row;
+            this.col = col;
+        }
+        public int row { get; set; }
+        public int col { get; set; }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {//initialize the lair
+            int[] sizes = Console.ReadLine()
+                .Split()
+                .Select(int.Parse)
+                .ToArray();
+            string[,] matrix = new string[sizes[0], sizes[1]];
+            var currRow = 0;
+            var currCol = 0;
+            var bunnies = new Queue<Bunny>();
+            for (int rows = 0; rows < matrix.GetLength(0); rows++)
+            {
+                var inputs = Console.ReadLine();
+                var chars = inputs.ToCharArray();
+                for (int cols = 0; cols < matrix.GetLength(1); cols++)
+                {
+                    matrix[rows, cols] = chars[cols].ToString();
+                    if (chars[cols].ToString() == "B")
+                    {
+                        var bunny = new Bunny(rows, cols);
+                        bunnies.Enqueue(bunny);
+                    }
+                    else if (chars[cols].ToString() == "P")
+                    {
+                        currRow = rows;
+                        currCol = cols;
+                    }
+                }
+            }//initialize the lair
+            var directions = Console.ReadLine();
+            var que = new Queue<string>();
+            for (int i = 0; i < directions.Length; i++)
+            {
+                var input = directions[i].ToString();
+                que.Enqueue(input);
+            }
+            var isAlive = true;
+            var escaped = false;
+            var bunnyRow = 0;
+            var bunnyCol = 0;
+            while (isAlive == true && que.Count > 0)
+            {
+                var command = que.Dequeue();
+                if (command == "L")
+                {
+                    if (currCol > 0)
+                    {
+                        matrix[currRow, currCol] = ".";
+                        currCol--;
+                    }
+                    else
+                    {
+                        matrix[currRow, currCol] = ".";
+                        escaped = true;
+                    }
+                }
+                else if (command == "R")
+                {
+                    if (currCol < matrix.GetLength(1) - 1)
+                    {
+                        matrix[currRow, currCol] = ".";
+                        currCol++;
+                    }
+                    else
+                    {
+                        matrix[currRow, currCol] = ".";
+                        escaped = true;
+                    }
+                }
+                else if (command == "U")
+                {
+                    if (currRow > 0)
+                    {
+                        matrix[currRow, currCol] = ".";
+                        currRow--;
+                    }
+                    else
+                    {
+                        matrix[currRow, currCol] = ".";
+                        escaped = true;
+                    }
+                }
+                else if (command == "D")
+                {
+                    if (currRow < matrix.GetLength(0) - 1)
+                    {
+                        matrix[currRow, currCol] = ".";
+                        currRow++;
+                    }
+                    else
+                    {
+                        matrix[currRow, currCol] = ".";
+                        escaped = true;
+                    }
+                }
+                if (matrix[currRow, currCol] == "B")
+                {
+                    isAlive = false;
+                }
+                else if (escaped == false)
+                {
+                    matrix[currRow, currCol] = "P";
+                }
+
+                var bunniesCount = bunnies.Count();
+                while (bunniesCount > 0)
+                {
+                    var bunny = bunnies.Dequeue();
+                    bunnyRow = bunny.row;
+                    bunnyCol = bunny.col;
+                    if (bunnyRow > 0)
+                    {
+                        if (matrix[bunnyRow - 1, bunnyCol] == "P")
+                        {
+                            isAlive = false;
+                        }
+                        else if (matrix[bunnyRow - 1, bunnyCol] == ".")
+                        {
+                            matrix[bunnyRow - 1, bunnyCol] = "B";
+                            bunnies.Enqueue(new Bunny(bunnyRow - 1, bunnyCol));
+                        }
+                    }
+                    if (bunnyRow < matrix.GetLength(0) - 1)
+                    {
+                        if (matrix[bunnyRow + 1, bunnyCol] == "P")
+                        {
+                            isAlive = false;
+                        }
+                        else if (matrix[bunnyRow + 1, bunnyCol] == ".")
+                        {
+                            matrix[bunnyRow + 1, bunnyCol] = "B";
+                            bunnies.Enqueue(new Bunny(bunnyRow + 1, bunnyCol));
+                        }
+                    }
+                    if (bunnyCol > 0)
+                    {
+                        if (matrix[bunnyRow, bunnyCol - 1] == "P")
+                        {
+                            isAlive = false;
+                        }
+                        else if (matrix[bunnyRow, bunnyCol - 1] == ".")
+                        {
+                            matrix[bunnyRow, bunnyCol - 1] = "B";
+                            bunnies.Enqueue(new Bunny(bunnyRow, bunnyCol - 1));
+                        }
+                    }
+                    if (bunnyCol < matrix.GetLength(1) - 1)
+                    {
+                        if (matrix[bunnyRow, bunnyCol + 1] == "P")
+                        {
+                            isAlive = false;
+                        }
+                        else if (matrix[bunnyRow, bunnyCol + 1] == ".")
+                        {
+                            matrix[bunnyRow, bunnyCol + 1] = "B";
+                            bunnies.Enqueue(new Bunny(bunnyRow, bunnyCol + 1));
+                        }
+                    }
+                    bunniesCount--;
+                }                                        //bunnies while
+                if (isAlive == false || escaped == true)
+                {
+                    break;
+                }
+                bunniesCount = bunnies.Count();
+            }                                    //main While
+            for (int rows = 0; rows < matrix.GetLength(0); rows++)
+            {
+                for (int cols = 0; cols < matrix.GetLength(1); cols++)
+                {
+                    Console.Write($"{matrix[rows, cols]}");
+                }
+                Console.WriteLine();
+            }
+            if (isAlive == true)
+            {
+                Console.WriteLine($"won: {currRow} {currCol}");
+            }
+            else
+            {
+                Console.WriteLine($"dead: {currRow} {currCol}");
+            }
+        }
+    }
+}
+
+
