@@ -1,0 +1,116 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Miner
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var n = int.Parse(Console.ReadLine());
+            var arr = Console.ReadLine()
+                .Split();
+            var commands = new Queue<string>(arr);
+            var currRow = 0;
+            var currCol = 0;
+            var coals = 0;
+            string[,] matrix = new string[n, n];
+            for (int rows = 0; rows < matrix.GetLength(0); rows++)
+            {
+                var field = Console.ReadLine()
+                    .Split();
+                for (int cols = 0; cols < matrix.GetLength(1); cols++)
+                {
+                    matrix[rows, cols] = field[cols];
+                    if (field[cols] == "c")
+                    {
+                        coals++;
+                    }
+                    else if (field[cols] == "s")
+                    {
+                        currRow = rows;
+                        currCol = cols;
+                    }
+                }
+            }
+            var isMoving = false;
+            while (commands.Count > 0)
+            {
+                var command = commands.Dequeue();
+
+                if (command == "left")
+                {
+                    if (currCol > 0)
+                    {
+                        currCol--;
+                        isMoving = true;
+                    }
+                    else
+                    {
+                        isMoving = false;
+                    }
+                }
+                else if (command == "right")
+                {
+                    if (currCol < matrix.GetLength(1) - 1)
+                    {
+                        currCol++;
+                        isMoving = true;
+                    }
+                    else
+                    {
+                        isMoving = false;
+                    }
+                }
+                else if (command == "up")
+                {
+                    if (currRow > 0)
+                    {
+                        currRow--;
+                        isMoving = true;
+                    }
+                    else
+                    {
+                        isMoving = false;
+                    }
+                }
+                else if (command == "down")
+                {
+                    if (currRow < matrix.GetLength(0) - 1)
+                    {
+                        currRow++;
+                        isMoving = true;
+                    }
+                    else
+                    {
+                        isMoving = false;
+                    }
+                }
+                if (isMoving == true)
+                {
+                    if (matrix[currRow, currCol] == "c")
+                    {
+                        coals--;
+                        matrix[currRow, currCol] = "*";
+                        if (coals == 0)
+                        {
+                            Console.WriteLine($"You collected all coals! ({currRow}, {currCol})");
+                            break;
+                        }
+                    }
+                    else if (matrix[currRow, currCol] == "e")
+                    {
+                        Console.WriteLine($"Game over! ({currRow}, {currCol})");
+                        break;
+                    }
+
+                }
+            }
+            if (matrix[currRow, currCol] != "e" && coals > 0)
+            {
+                Console.WriteLine($"{coals} coals left. ({currRow}, {currCol})");
+            }
+        }
+    }
+}
