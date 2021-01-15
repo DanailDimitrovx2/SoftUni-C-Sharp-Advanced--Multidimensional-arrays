@@ -1,0 +1,57 @@
+using System;
+using System.Linq;
+
+namespace SquareWithMaxSum
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int[] sizes = Console.ReadLine()
+                 .Split(", ")
+                 .Select(int.Parse)
+                 .ToArray();
+            int[,] matrix = new int[sizes[0], sizes[1]];
+            for (int rows = 0; rows < matrix.GetLength(0); rows++)
+            {
+                var values = Console.ReadLine()
+                    .Split(", ")
+                    .Select(int.Parse)
+                    .ToArray();
+                for (int cols = 0; cols < matrix.GetLength(1); cols++)
+                {
+                    matrix[rows, cols] = values[cols];
+                }
+            }
+            var biggestSum = int.MinValue;
+            var maxRow = 0;
+            var maxCol = 0;
+            for (int rows = 0; rows < matrix.GetLength(0)-1; rows++)
+            {
+                for (int cols = 0; cols < matrix.GetLength(1) - 1; cols++)
+                {
+                    var currentSum = matrix[rows, cols]
+                        + matrix[rows, cols + 1]
+                        + matrix[rows + 1, cols]
+                        + matrix[rows + 1, cols + 1];
+                    if (currentSum > biggestSum)
+                    {
+                        biggestSum = currentSum;
+                        maxRow = rows;
+                        maxCol = cols;
+                    }
+                }
+            }
+            for(int rows=maxRow; rows<=maxRow+1; rows++)
+            {
+                for (int cols = maxCol; cols <= maxCol + 1; cols++)
+                {
+                    Console.Write($"{matrix[rows, cols]} ");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine(biggestSum);
+
+        }
+    }
+}
