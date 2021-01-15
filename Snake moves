@@ -1,0 +1,50 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace накеМожес
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int[] sizes = Console.ReadLine()
+                 .Split()
+                 .Select(int.Parse)
+                 .ToArray();
+            char[,] matrix = new char[sizes[0], sizes[1]];
+            var chars = Console.ReadLine();
+            chars.Split(string.Join(' ', chars));
+                
+                
+            var que = new Queue<char>(chars);
+            for (int rows = 0; rows < matrix.GetLength(0); rows++)
+            {
+                if (rows % 2 == 0)
+                {
+                    for (int cols = 0; cols < matrix.GetLength(1); cols++)
+                    {
+                        matrix[rows, cols] = que.Dequeue();
+                        que.Enqueue(matrix[rows, cols]);
+                    }
+                }
+                else
+                {
+                    for(int cols=matrix.GetLength(1)-1; cols>=0; cols--)
+                    {
+                        matrix[rows, cols] = que.Dequeue();
+                        que.Enqueue(matrix[rows, cols]);
+                    }
+                }
+            }
+            for(int rows=0; rows<matrix.GetLength(0); rows++)
+            {
+                for(int cols=0; cols<matrix.GetLength(1); cols++)
+                {
+                    Console.Write($"{matrix[rows, cols]}");
+                }
+                Console.WriteLine();
+            }
+        }
+    }
+}
